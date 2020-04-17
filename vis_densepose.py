@@ -15,18 +15,17 @@ dp_coco = COCO(coco_folder + '/annotations/densepose_coco_2014_train.json')
 im_ids = dp_coco.getImgIds()
 # Selected_im = im_ids[randint(0, len(im_ids))]
 # print(Selected_im)
-Selected_im = 473993
+Selected_im = 18641
 im = dp_coco.loadImgs(Selected_im)[0]
 ann_ids = dp_coco.getAnnIds(imgIds=im['id'])
 anns = dp_coco.loadAnns(ann_ids)
 im_name = os.path.join(coco_folder + 'train2014', im['file_name'])
 I = cv2.imread(im_name)
 
-
-# plt.imshow(I[:, :, ::-1])
-# plt.axis('off')
-# plt.savefig('vis_train{}.png'.format(str(Selected_im)))
-# plt.close()
+plt.imshow(I[:, :, ::-1])
+plt.axis('off')
+plt.savefig('vis_train_{}.png'.format(str(Selected_im)))
+plt.close()
 
 
 def GetDensePoseMask(Polys):
@@ -44,7 +43,6 @@ for ann in anns:
     bbr = np.array(ann['bbox']).astype(int)  # the box.
     if 'dp_masks' in ann.keys():  # If we have densepose annotation for this ann,
         Mask = GetDensePoseMask(ann['dp_masks'])
-        print(Mask.shape)
         ################
         x1, y1, x2, y2 = bbr[0], bbr[1], bbr[0] + bbr[2], bbr[1] + bbr[3]
         x2 = min([x2, I.shape[1]]);
@@ -57,11 +55,10 @@ for ann in anns:
         Mask_vis[MaskBool] = I_vis[y1:y2, x1:x2, :][MaskBool]
         I_vis[y1:y2, x1:x2, :] = I_vis[y1:y2, x1:x2, :] * 0.3 + Mask_vis * 0.7
 
-# plt.imshow(I_vis[:, :, ::-1])
-# plt.axis('off')
-#
-# plt.savefig('vis_train_{}_prsing.png'.format(str(Selected_im)))
-
+plt.imshow(I_vis[:, :, ::-1])
+plt.axis('off')
+plt.savefig('vis_train_{}_prsing.png'.format(str(Selected_im)))
+plt.close()
 
 fig = plt.figure(figsize=[15, 5])
 plt.subplot(1, 3, 1)
