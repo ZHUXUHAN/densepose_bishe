@@ -21,6 +21,7 @@ ann_ids = dp_coco.getAnnIds(imgIds=im['id'])
 anns = dp_coco.loadAnns(ann_ids)
 im_name = os.path.join(coco_folder + 'train2014', im['file_name'])
 I = cv2.imread(im_name)
+<<<<<<< HEAD
 fig, ax = plt.subplots()
 
 plt.imshow(I[:, :, ::-1])
@@ -46,6 +47,11 @@ plt.gca().yaxis.set_major_locator(plt.NullLocator())
 plt.subplots_adjust(top=1, bottom=0, left=0, right=1, hspace=0, wspace=0)
 plt.margins(0, 0)
 
+=======
+
+plt.imshow(I[:, :, ::-1])
+plt.axis('off')
+>>>>>>> 686376d9f92cd78c4042cc4a93ed185e360495ca
 plt.savefig('vis_train_{}.png'.format(str(Selected_im)))
 plt.close()
 
@@ -59,6 +65,7 @@ def GetDensePoseMask(Polys):
     return MaskGen
 
 
+<<<<<<< HEAD
 def GetDensePoseMask_i(Polys, i):
     if Polys[i - 1]:
         current_mask = mask_util.decode(Polys[i - 1])
@@ -90,22 +97,35 @@ plt.savefig('vis_train_{}_box.png'.format(str(Selected_im)))
 plt.close()
 
 
+=======
+# I_vis = I.copy() / 2  # Dim the image.
+I_vis = I.copy()
+>>>>>>> 686376d9f92cd78c4042cc4a93ed185e360495ca
 for ann in anns:
     bbr = np.array(ann['bbox']).astype(int)  # the box.
     if 'dp_masks' in ann.keys():  # If we have densepose annotation for this ann,
         Mask = GetDensePoseMask(ann['dp_masks'])
+<<<<<<< HEAD
 
+=======
+>>>>>>> 686376d9f92cd78c4042cc4a93ed185e360495ca
         ################
         x1, y1, x2, y2 = bbr[0], bbr[1], bbr[0] + bbr[2], bbr[1] + bbr[3]
         x2 = min([x2, I.shape[1]]);
         y2 = min([y2, I.shape[0]])
+<<<<<<< HEAD
         ###############
         MaskIm = cv2.resize(Mask, (int(x2 - x1), int(y2 - y1)), interpolation=cv2.INTER_NEAREST)
 
+=======
+        ################
+        MaskIm = cv2.resize(Mask, (int(x2 - x1), int(y2 - y1)), interpolation=cv2.INTER_NEAREST)
+>>>>>>> 686376d9f92cd78c4042cc4a93ed185e360495ca
         MaskBool = np.tile((MaskIm == 0)[:, :, np.newaxis], [1, 1, 3])
         #  Replace the visualized mask image with I_vis.
         Mask_vis = cv2.applyColorMap((MaskIm * 15).astype(np.uint8), cv2.COLORMAP_PARULA)[:, :, :]
         Mask_vis[MaskBool] = I_vis[y1:y2, x1:x2, :][MaskBool]
+<<<<<<< HEAD
         I_vis[y1:y2, x1:x2, :] = I_vis[y1:y2, x1:x2, :] * 0.7 + Mask_vis * 0.3
 
 for ann in anns:
@@ -246,6 +266,30 @@ plt.margins(0, 0)
 plt.savefig('vis_train_{}_u.png'.format(str(Selected_im)))
 plt.close()
 
+=======
+        I_vis[y1:y2, x1:x2, :] = I_vis[y1:y2, x1:x2, :] * 0.3 + Mask_vis * 0.7
+
+plt.imshow(I_vis[:, :, ::-1])
+plt.axis('off')
+plt.savefig('vis_train_{}_prsing.png'.format(str(Selected_im)))
+plt.close()
+
+fig = plt.figure(figsize=[15, 5])
+plt.subplot(1, 3, 1)
+plt.imshow(I[:, :, ::-1])
+plt.axis('off')
+plt.title('Patch Indices')
+plt.subplot(1, 3, 2)
+plt.imshow(I[:, :, ::-1])
+plt.axis('off')
+plt.title('U coordinates')
+plt.subplot(1, 3, 3)
+plt.imshow(I[:, :, ::-1])
+plt.axis('off')
+plt.title('V coordinates')
+
+## For each ann, scatter plot the collected points.
+>>>>>>> 686376d9f92cd78c4042cc4a93ed185e360495ca
 for ann in anns:
     bbr = np.round(ann['bbox'])
     if ('dp_masks' in ann.keys()):
@@ -257,6 +301,7 @@ for ann in anns:
         Point_V = np.array(ann['dp_V'])
         #
         x1, y1, x2, y2 = bbr[0], bbr[1], bbr[0] + bbr[2], bbr[1] + bbr[3]
+<<<<<<< HEAD
         x2 = min([x2, img_alpha.shape[1]]);
         y2 = min([y2, img_alpha.shape[0]])
         ###############
@@ -276,3 +321,19 @@ plt.margins(0, 0)
 
 plt.savefig('vis_train_{}_v.png'.format(str(Selected_im)))
 plt.close()
+=======
+        x2 = min([x2, I.shape[1]]);
+        y2 = min([y2, I.shape[0]])
+        ###############
+        Point_x = Point_x + x1
+        Point_y = Point_y + y1
+        plt.subplot(1, 3, 1)
+        #######绘制散点图#######
+        plt.scatter(Point_x, Point_y, 22, Point_I)
+        plt.subplot(1, 3, 2)
+        plt.scatter(Point_x, Point_y, 22, Point_U)
+        plt.subplot(1, 3, 3)
+        plt.scatter(Point_x, Point_y, 22, Point_V)
+
+plt.savefig('vis_train_{}_iuv.png'.format(str(Selected_im)))
+>>>>>>> 686376d9f92cd78c4042cc4a93ed185e360495ca
